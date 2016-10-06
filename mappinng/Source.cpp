@@ -59,7 +59,7 @@ main(int argc, char *argv[])
 	int i;
 
 	// \~japanese "COM1" は、センサが認識されているデバイス名にする必要がある
-	const char connect_device[] = "COM11";
+	const char connect_device[] = "COM13";
 	const long connect_baudrate = 115200;
 
 	// \~japanese センサに対して接続を行う。
@@ -120,13 +120,13 @@ main(int argc, char *argv[])
 			length = length_data[i];
 			// \todo check length is valid
 
-			x = (long)(length * cos(radian))/8+rb_x;
-			y = (long)(length * sin(radian))/8+rb_y;
+			x = (long)(length * cos(radian))/5+rb_x;
+			y = (long)(length * sin(radian))/5+rb_y;
 			if ((length > min_distance) && (length < max_distance))
 			{
 				
 				cv::line(img, cv::Point(rb_x, rb_y), cv::Point(x, y), cv::Scalar(255, 0, 0), 0, 8);
-				cv::circle(img, cv::Point(x, y), 0, cv::Scalar(0, 255, 255), -1, CV_AA);
+				if (x >= 0 && x<800 && y >= 0 && y<800){
 				a = img.step*y + (x*img.elemSize());
 				if (a>0)
 				{
@@ -134,14 +134,17 @@ main(int argc, char *argv[])
 					img.data[a + 1] = 255;
 					img.data[a + 2] = 0;
 				}
-				
+				}
 				
 			}
 			
 		}
 		cpy_img = img.clone();
 		cv::circle(cpy_img, cv::Point(rb_x, rb_y), 30, cv::Scalar(0, 0, 200), 3, 4);
+		
 		cv::imshow("drawing", cpy_img);
+		cpy_img.release();
+		
 		c = cvWaitKey(1);
 		if (GetAsyncKeyState('Q'))
 		{
